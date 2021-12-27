@@ -6,22 +6,19 @@ repositories {
     mavenCentral()
 }
 
-def junitVersion = "5.7.2"
+def junitVersion = "5.8.2"
 
 dependencies {
     testImplementation(
-            "io.rest-assured:rest-assured:4.3.1",
-            "org.assertj:assertj-core:3.19.0",
+            "io.rest-assured:rest-assured:4.4.0",
+            "org.assertj:assertj-core:3.21.0",
             "org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
 }
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
 }
-
 
 tasks.withType(Test) {
     systemProperties(System.getProperties())
