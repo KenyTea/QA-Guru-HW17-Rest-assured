@@ -3,14 +3,15 @@ import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SelenoidTests {
 
     // make request to https://selenoid.autotests.cloud/status
-    // total: 20
+    // assert, that "total" is 20
 
     @Test
     void checkTotal20() {
@@ -18,6 +19,7 @@ public class SelenoidTests {
                 .when()
                 .get("https://selenoid.autotests.cloud/status")
                 .then()
+                .statusCode(200)
                 .body("total", is(20));
     }
 
@@ -25,11 +27,23 @@ public class SelenoidTests {
     void checkTotal20WithoutGiven() {
         get("https://selenoid.autotests.cloud/status")
                 .then()
+                .statusCode(200)
                 .body("total", is(20));
     }
 
     @Test
-    void checkTotal20WithResponseAndBadPractice() {
+    void checkChrome() {
+        // {"total":20,"used":0,"queued":0,"pending":0,
+        // "browsers":{"android":{"8.1":{}},"chrome":{"90.0":{},"91.0":{}},
+        // "firefox":{"88.0":{},"89.0":{}},"opera":{"76.0":{},"77.0":{}}}}
+        get("https://selenoid.autotests.cloud/status")
+                .then()
+                .statusCode(200)
+                .body("browsers.chrome", hasKey("91.0"));
+    }
+
+    @Test
+    void checkTotal20BadPractice() {
         String response =
                 get("https://selenoid.autotests.cloud/status")
                         .then()
@@ -39,12 +53,13 @@ public class SelenoidTests {
 
         // DONT DO THAT, BAD PRACTICE
         assertEquals("{\"total\":20,\"used\":0,\"queued\":0,\"pending\":0,\"browsers\":" +
-                "{\"chrome\":{\"90.0\":{},\"91.0\":{}},\"firefox\":{\"88.0\":{},\"89.0\":{}}," +
-                "\"opera\":{\"76.0\":{},\"77.0\":{}}}}\n", response);
+                        "{\"android\":{\"8.1\":{}},\"chrome\":{\"90.0\":{},\"91.0\":{}}," +
+                        "\"firefox\":{\"88.0\":{},\"89.0\":{}},\"opera\":{\"76.0\":{},\"77.0\":{}}}}\n",
+                response);
     }
 
     @Test
-    void checkTotal20WithResponse() {
+    void checkTotal20GoodPractice() {
         Integer response =
                 get("https://selenoid.autotests.cloud/status")
                         .then()
@@ -62,12 +77,11 @@ public class SelenoidTests {
                         .then()
                         .extract().response();
 
-        System.out.println(response);  // io.restassured.internal.RestAssuredResponseImpl@25401706
-        System.out.println(response.toString()); // io.restassured.internal.RestAssuredResponseImpl@25401706
-        System.out.println(response.asString()); // {"total":20,"used":0,"queued":0,"pending":0,"browsers":{"ch
-        System.out.println(response.path("total") + ""); // 20
-        System.out.println(response.path("browsers.chrome").toString()); // {90.0={}, 91.0={}}
-
+        System.out.println(response);
+        System.out.println(response.toString());
+        System.out.println(response.asString());
+        System.out.println(response.path("total").toString());
+        System.out.println(response.path("browsers.chrome").toString());
     }
 
     @Test
@@ -93,8 +107,7 @@ public class SelenoidTests {
     void checkWdHubStatus200() {
         get("https://user1:1234@selenoid.autotests.cloud/wd/hub/status")
                 .then()
-                .statusCode(200)
-                .body("value.ready", is(true));
+                .statusCode(200);
     }
 
     @Test
@@ -103,8 +116,6 @@ public class SelenoidTests {
                 .auth().basic("user1", "1234")
                 .get("https://selenoid.autotests.cloud/wd/hub/status")
                 .then()
-                .statusCode(200)
-                .body("value.ready", is(true));
+                .statusCode(200);
     }
-
 }
