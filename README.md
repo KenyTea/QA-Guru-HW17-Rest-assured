@@ -33,3 +33,11 @@ ___
 This project was created to understand how to work with Rest Assured.
 
 ___
+
+## Materials:
+
+[library for assertThat checks](https://assertj.github.io/doc/)
+[Documentation Rest-assured](https://github.com/rest-assured/rest-assured/wiki/usage)
+[Selenide + REST Assured example](https://github.com/autotests-cloud/allure-qaguru)
+[Parse json](https://jsonlint.com/)
+[Examples for training](https://reqres.in/)
