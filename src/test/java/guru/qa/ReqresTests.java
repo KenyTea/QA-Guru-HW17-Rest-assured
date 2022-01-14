@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ReqresTests {
@@ -49,29 +49,22 @@ public class ReqresTests {
     }
 
     @Test
-    void listResourceWithForTest() {
-        Response data =
-                given()
-                        .when()
-                        .get("api/unknown")
-                        .then()
-                        .extract().response();
-        ArrayList<Object> dataList = data.path("data");
-        ArrayList<String> names = new ArrayList<>();
-        names.add("cerulean");
-        names.add("fuchsia rose");
-        names.add("true red");
-        names.add("aqua sky");
-        names.add("tigerlily");
-        names.add("blue turquoise");
-        int i = 0;
-        for (Object x : dataList) {
-            if (i + 1 == (int) ((LinkedHashMap) x).get("id")) {
-                assertEquals(((LinkedHashMap) x).get("name"), names.get(i));
-            }
-            i++;
+    void listResourceTest2() {
+        given()
+                .when()
+                .get("api/unknown")
+                .then()
+                .body("data.name.flatten()",
+                        hasItems(
+                                "cerulean",
+                                "fuchsia rose",
+                                "true red",
+                                "aqua sky",
+                                "tigerlily",
+                                "blue turquoise")
+                );
         }
-    }
+
 
     @Test
     void singleResourceTest() {
