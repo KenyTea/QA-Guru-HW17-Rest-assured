@@ -13,7 +13,6 @@ ___
 <img width="5%" title="JUnit5" src="forReadme/JUnit5_icon.png">
 <img width="5%" title="IntelliJ IDEA" src="forReadme/Intellij_icon.png">
 <img width="5%" title="Selenide" src="forReadme/Selenide_icon.svg">
-<img width="5%" title="Selenoid" src="forReadme/Selenoid_icon.svg">
 <img width="5%" title="Github" src="forReadme/Github_icon.png">
 <img width="5%" title="Rest Assured" src="forReadme/Rest Assured.png">
 </code>
