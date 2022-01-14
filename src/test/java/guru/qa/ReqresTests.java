@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ReqresTests {
     @BeforeAll
@@ -20,7 +21,7 @@ public class ReqresTests {
     }
 
     @Test
-    void singleUser() {
+    void singleUserTest() {
         given()
                 .when()
                 .get("api/users/2")
@@ -34,7 +35,7 @@ public class ReqresTests {
     }
 
     @Test
-    void listResource() {
+    void listResourceTest() {
         given()
                 .when()
                 .get("api/unknown")
@@ -48,7 +49,7 @@ public class ReqresTests {
     }
 
     @Test
-    void listResourceWithFor() {
+    void listResourceWithForTest() {
         Response data =
                 given()
                         .when()
@@ -66,14 +67,14 @@ public class ReqresTests {
         int i = 0;
         for (Object x : dataList) {
             if (i + 1 == (int) ((LinkedHashMap) x).get("id")) {
-                Assertions.assertEquals(((LinkedHashMap) x).get("name"), names.get(i));
+                assertEquals(((LinkedHashMap) x).get("name"), names.get(i));
             }
             i++;
         }
     }
 
     @Test
-    void singleResource() {
+    void singleResourceTest() {
 
         String data = "{ \"name\": \"morpheus\", \"job\": \"leader\" }";
 
@@ -85,5 +86,21 @@ public class ReqresTests {
                 .then()
                 .statusCode(201)
                 .body("name", is("morpheus"));
+    }
+
+    @Test
+    void updateTest() {
+
+        String data = "{ \"name\": \"morpheus\", \"job\": \"zion resident\" }";
+
+        given()
+                .contentType(JSON)
+                .body(data)
+                .when()
+                .put("api/users?page=2")
+                .then()
+                .statusCode(200)
+                .body("name", is("morpheus"))
+                .body("job", is("zion resident"));
     }
 }
